@@ -6,8 +6,9 @@ unsigned int FFM_COLOUR[NUM_STATES] = {
     TFT_BLACK,
     TFT_DARKGREEN,
     TFT_GREEN,
-    TFT_ORANGE,
-    TFT_RED
+    TFT_GOLD,
+    TFT_RED,
+    TFT_MAROON
 };
 
 
@@ -43,7 +44,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                     forest->temp[index] = FIRE;
                     forest->population--;
                 } else {
-                    if (state == TREE || random(forest->sapling_growth) == 0)
+                    if (state == SAPLING && random(forest->sapling_growth) == 0)
                         forest->temp[index] = TREE;
                     // Chance for trees to spontaneously catch fire
                     if (random(forest->ignition) == 0) {
@@ -52,11 +53,12 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                     }
                 }
             } else if (state == FIRE) {
-                forest->temp[index] = ASH;
-            } else if (state == ASH) {
+                forest->temp[index] = EMBERS;
+            } else if (state == EMBERS) {
+                forest->temp[index] = DEAD;
+            } else if (state == DEAD && random(4) == 0) {
                 forest->temp[index] = EMPTY;
-            } else {
-                forest->temp[index] = EMPTY;
+            } else if (state == EMPTY) {
                 // Chance for trees to grow on empty cells
                 if (random(forest->new_growth) == 0) {
                     forest->temp[index] = SAPLING;
@@ -69,7 +71,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             if (forest->cell[i*COLS+j] != forest->temp[i*COLS+j]) {
                 forest->cell[i*COLS+j] = forest->temp[i*COLS+j];
-                tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
+                tft->fillRect(i*LEN-LEN+1, j*LEN-LEN+1, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
             }
         }
     }
@@ -83,7 +85,7 @@ void grow_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
             int index = i*COLS + j;
             if (random(4) == 0 && forest->cell[index] == EMPTY) {
                 forest->cell[index] = SAPLING;
-                tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[SAPLING]);
+                tft->fillRect(i*LEN-LEN+1, j*LEN-LEN+1, LEN, LEN, FFM_COLOUR[SAPLING]);
                 forest->population++;
             }
         }
@@ -104,7 +106,7 @@ void ignite_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
             continue;
         }
         forest->cell[spark] = FIRE;
-        tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[FIRE]);
+        tft->fillRect(i*LEN-LEN+1, j*LEN-LEN+1, LEN, LEN, FFM_COLOUR[FIRE]);
         forest->population--;
         break;
     }

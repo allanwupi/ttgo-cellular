@@ -1,13 +1,13 @@
 #include <TFT_eSPI.h>
 #include "forestfire.h"
 
-#define DELAY_MILLIS  50
-#define TFT_ROTATION  3
+#define DELAY_MILLIS 50
+#define TFT_ROTATION 3
 #define LEFT_BUTTON 0
 #define RIGHT_BUTTON 14
 
-unsigned int growth_rate = 200;
-unsigned int sapling_growth_rate = 20;
+unsigned int growth_rate = 500;
+unsigned int sapling_growth_rate = 50;
 unsigned int ignition_rate = growth_rate * 100;
 bool left_button_press(void);
 bool right_button_press(void);
