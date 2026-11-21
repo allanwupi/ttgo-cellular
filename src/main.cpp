@@ -2,11 +2,12 @@
 #include "forestfire.h"
 //#include "elementary.h"
 
-#define DELAY_MILLIS  67
+#define DELAY_MILLIS  50
 #define TFT_ROTATION  3
 
-unsigned int growth_rate = 100;
-unsigned int ignition_rate = growth_rate * 50;
+unsigned int growth_rate = 200;
+unsigned int sapling_growth_rate = 10;
+unsigned int ignition_rate = growth_rate * 100;
 
 FFM_t *forest;
 TFT_eSPI tft;
@@ -19,7 +20,7 @@ void setup() {
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(1);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    forest = new_forest(growth_rate, ignition_rate);
+    forest = new_forest(growth_rate, sapling_growth_rate, ignition_rate);
 }
 
 

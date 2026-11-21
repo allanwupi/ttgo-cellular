@@ -22,14 +22,15 @@ extern unsigned int FFM_COLOUR[NUM_STATES];
 
 typedef struct ForestFireModel {
     int population;
-    unsigned int growth;
+    unsigned int new_growth;
+    unsigned int sapling_growth;
     unsigned int ignition;
     uint8_t temp[ROWS*COLS];
     uint8_t cell[ROWS*COLS];
 } FFM_t;
 
 
-struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int ignition_rate);
+struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate);
 void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft);
 
 #endif

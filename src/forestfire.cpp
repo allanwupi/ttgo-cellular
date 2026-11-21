@@ -12,14 +12,15 @@ unsigned int FFM_COLOUR[NUM_STATES] = {
 
 
 // Construct a forest fire model
-struct ForestFireModel *new_forest(unsigned int growth, unsigned int ignition) {
+struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate) {
     FFM_t *a = (FFM_t *)malloc(sizeof(FFM_t));
     if (a == nullptr) {
         return nullptr;
     }
     a->population = 0;
-    a->growth = growth;
-    a->ignition = ignition;
+    a->new_growth = growth_rate;
+    a->sapling_growth = sapling_growth_rate;
+    a->ignition = ignition_rate;
     for (int n = 0; n < ROWS*COLS; n++) a->cell[n] = EMPTY;
     return a;
 }
@@ -41,9 +42,10 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                     forest->temp[index] = FIRE;
                     forest->population--;
                 } else {
-                    forest->temp[index] = TREE;
+                    if (state == TREE || random(forest->sapling_growth) == 0)
+                        forest->temp[index] = TREE;
                     // Chance for trees to spontaneously catch fire
-                    if (random(forest->ignition) == forest->ignition-1) {
+                    if (random(forest->ignition) == 0) {
                         forest->temp[index] = FIRE;
                         forest->population--;
                     }
@@ -55,7 +57,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
             } else {
                 forest->temp[index] = EMPTY;
                 // Chance for trees to grow on empty cells
-                if (random(forest->growth) == forest->growth-1) {
+                if (random(forest->new_growth) == 0) {
                     forest->temp[index] = SAPLING;
                     forest->population++;
                 }
