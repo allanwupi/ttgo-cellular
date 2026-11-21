@@ -33,6 +33,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             int index = base + j;
             uint8_t state = forest->cell[index];
+            forest->temp[index] = state;
             // Trees adjacent to fires catch fire (von Neumann neighborhood)
             if (state == TREE || state == SAPLING) {
                 if (forest->cell[index-COLS] == FIRE
@@ -68,7 +69,6 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             if (forest->cell[i*COLS+j] != forest->temp[i*COLS+j]) {
                 forest->cell[i*COLS+j] = forest->temp[i*COLS+j];
-                //tft->drawPixel(i*LEN-LEN, j*LEN-LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
                 tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
             }
         }
@@ -76,12 +76,12 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
 }
 
 
-// Grow trees on half of all empty spaces immediately
+// Immediately grow trees on 1/10th of all empty spaces
 void grow_ffm(ForestFireModel *forest) {
     for (int i = 1; i < ROWS-1; i++) {
         for (int j = 1; j < COLS-1; j++) {
             int index = i*COLS + j;
-            if (random(2) && forest->cell[index] == EMPTY) {
+            if (random(10) == 0 && forest->cell[index] == EMPTY) {
                 forest->cell[index] = SAPLING;
                 forest->population++;
             }
@@ -90,15 +90,18 @@ void grow_ffm(ForestFireModel *forest) {
 }
 
 
-// Burn half of all trees immediately
+// Attempts to light a tree on fire
 void ignite_ffm(ForestFireModel *forest) {
-    for (int i = 1; i < ROWS-1; i++) {
-        for (int j = 1; j < COLS-1; j++) {
-            int index = i*COLS + j;
-            if (random(2) && forest->cell[index] == TREE) {
-                forest->cell[index] = FIRE;
-                forest->population--;
-            }
+    int attempts = 0;
+    int max_attempts = 100;
+    while (attempts < max_attempts) {
+        int spark = random(1,ROWS-1)*COLS + random(1,COLS-1);
+        if (forest->cell[spark] != TREE && forest->cell[spark] != SAPLING) {
+            max_attempts++;
+            continue;
         }
+        forest->cell[spark] = FIRE;
+        forest->population--;
+        break;
     }
 }
