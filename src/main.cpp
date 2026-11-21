@@ -6,7 +6,7 @@
 #define TFT_ROTATION  3
 
 unsigned int growth_rate = 100;
-unsigned int ignition_rate = growth_rate * 100;
+unsigned int ignition_rate = growth_rate * 50;
 
 FFM_t *forest;
 TFT_eSPI tft;

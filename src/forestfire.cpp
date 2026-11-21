@@ -45,7 +45,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                     // Chance for trees to spontaneously catch fire
                     if (random(forest->ignition) == forest->ignition-1) {
                         forest->temp[index] = FIRE;
-                        forest->population++;
+                        forest->population--;
                     }
                 }
             } else if (state == FIRE) {
