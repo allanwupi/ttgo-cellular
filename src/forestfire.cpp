@@ -1,5 +1,5 @@
 #include <TFT_eSPI.h>
-#include "model.h"
+#include "forestfire.h"
 
 
 unsigned int FFM_COLOUR[NUM_STATES] = {
@@ -38,8 +38,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             int index = base + j;
             uint8_t state = forest->cell[index];
-
-            // Trees adjacent to fires burn (von Neumann neighborhood)
+            // Trees adjacent to fires catch fire (von Neumann neighborhood)
             if (state == TREE) {
                 if (forest->cell[index-COLS] == FIRE
                     || forest->cell[index-1] == FIRE
@@ -70,7 +69,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             if (forest->cell[i*COLS+j] != forest->temp[i*COLS+j]) {
                 forest->cell[i*COLS+j] = forest->temp[i*COLS+j];
-                tft->drawPixel(i, j, FFM_COLOUR[forest->cell[i*COLS+j]]);
+                tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
             }
         }
     }
@@ -82,7 +81,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
 void draw_forest(ForestFireModel *forest, TFT_eSPI *tft) {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
-            tft->drawPixel(i, j, FFM_COLOUR[forest->cell[i*COLS+j]]);
+            tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
         }
     }
 }

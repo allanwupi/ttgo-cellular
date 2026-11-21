@@ -1,22 +1,17 @@
-#include <Arduino.h>
 #include <TFT_eSPI.h>
-#include "model.h"
+#include "forestfire.h"
 //#include "elementary.h"
 
-
-#define DELAY_MILLIS  50
+#define DELAY_MILLIS  67
 #define TFT_ROTATION  3
-//#define RULE_NUMBER   30
-
 
 unsigned int growth_rate = 100;
-unsigned int ignition_rate = 1000;
+unsigned int ignition_rate = 5000;
 
 FFM_t *A;
 TFT_eSPI tft;
 
 void setup() {
-    //Serial.begin(115200);
     tft.init();
     tft.setRotation(TFT_ROTATION);
     tft.fillScreen(TFT_BLACK);
@@ -24,13 +19,15 @@ void setup() {
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     A = new_forest(growth_rate, ignition_rate);
     draw_forest(A, &tft);
-    //tft.setCursor(0,0);
-    //tft.printf("Rule %d\n", RULE_NUMBER);
 }
 
 
 void loop() {
-    simulate_forest(A, &tft);
+    static unsigned long prev = millis();
+    if (millis() - prev >= DELAY_MILLIS) {
+        simulate_forest(A, &tft);
+        prev = millis();
+    }
 }
 
 
