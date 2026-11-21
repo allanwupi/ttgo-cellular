@@ -30,7 +30,7 @@ typedef struct ForestFireModel {
 
 
 struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int ignition_rate);
-void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft);
-void draw_forest(ForestFireModel *forest, TFT_eSPI *tft);
+void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft);
+void draw_ffm(ForestFireModel *forest, TFT_eSPI *tft);
 
 #endif

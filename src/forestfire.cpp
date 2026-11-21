@@ -24,8 +24,6 @@ struct ForestFireModel *new_forest(unsigned int growth, unsigned int ignition) {
         for (int j = 0; j < COLS; j++) {
             a->temp[i*COLS+j] = EMPTY;
             a->cell[i*COLS+j] = EMPTY;
-            if (i > 0 && i < ROWS-1 && j > 0 && j < COLS-1)
-                a->cell[i*COLS+j] = random(EMPTY, SAPLING+1);
         }
     }
     return a;
@@ -33,7 +31,7 @@ struct ForestFireModel *new_forest(unsigned int growth, unsigned int ignition) {
 
 
 // Simulate a step of the forest fire cellular automaton
-void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
+void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
     for (int i = 1; i < ROWS-1; i++) {
         int base = i * COLS;
         for (int j = 1; j < COLS-1; j++) {
@@ -80,7 +78,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
 
 
 // Draw the simulated forest
-void draw_forest(ForestFireModel *forest, TFT_eSPI *tft) {
+void draw_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
             //tft->drawPixel(i*LEN-LEN, j*LEN-LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);

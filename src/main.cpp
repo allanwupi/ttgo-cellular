@@ -6,9 +6,9 @@
 #define TFT_ROTATION  3
 
 unsigned int growth_rate = 100;
-unsigned int ignition_rate = 5000;
+unsigned int ignition_rate = growth_rate * 100;
 
-FFM_t *A;
+FFM_t *forest;
 TFT_eSPI tft;
 
 void setup() {
@@ -17,15 +17,15 @@ void setup() {
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(1);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    A = new_forest(growth_rate, ignition_rate);
-    draw_forest(A, &tft);
+    forest = new_forest(growth_rate, ignition_rate);
+    draw_ffm(forest, &tft);
 }
 
 
 void loop() {
     static unsigned long prev = millis();
     if (millis() - prev >= DELAY_MILLIS) {
-        simulate_forest(A, &tft);
+        simulate_ffm(forest, &tft);
         prev = millis();
     }
 }
