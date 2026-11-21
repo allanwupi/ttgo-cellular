@@ -30,10 +30,10 @@ void setup() {
 void loop() {
     static unsigned long prev = millis();
     if (left_button_press()) {
-        grow_ffm(forest);
+        grow_ffm(forest, &tft);
     }
     if (right_button_press()) {
-        ignite_ffm(forest);
+        ignite_ffm(forest, &tft);
     }
     if (millis() - prev >= DELAY_MILLIS) {
         simulate_ffm(forest, &tft);

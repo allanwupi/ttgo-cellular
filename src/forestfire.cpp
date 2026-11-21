@@ -76,13 +76,14 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
 }
 
 
-// Immediately grow trees on 1/10th of all empty spaces
-void grow_ffm(ForestFireModel *forest) {
+// Immediately grow trees on 1/4 of all empty spaces
+void grow_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
     for (int i = 1; i < ROWS-1; i++) {
         for (int j = 1; j < COLS-1; j++) {
             int index = i*COLS + j;
-            if (random(10) == 0 && forest->cell[index] == EMPTY) {
+            if (random(4) == 0 && forest->cell[index] == EMPTY) {
                 forest->cell[index] = SAPLING;
+                tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[SAPLING]);
                 forest->population++;
             }
         }
@@ -91,16 +92,19 @@ void grow_ffm(ForestFireModel *forest) {
 
 
 // Attempts to light a tree on fire
-void ignite_ffm(ForestFireModel *forest) {
+void ignite_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
     int attempts = 0;
     int max_attempts = 100;
     while (attempts < max_attempts) {
-        int spark = random(1,ROWS-1)*COLS + random(1,COLS-1);
+        int i = random(1,ROWS-1);
+        int j = random(1,COLS-1);
+        int spark = i*COLS + j;
         if (forest->cell[spark] != TREE && forest->cell[spark] != SAPLING) {
             max_attempts++;
             continue;
         }
         forest->cell[spark] = FIRE;
+        tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[FIRE]);
         forest->population--;
         break;
     }
