@@ -4,6 +4,7 @@
 
 unsigned int FFM_COLOUR[NUM_STATES] = {
     TFT_BLACK,
+    TFT_DARKGREEN,
     TFT_GREEN,
     TFT_ORANGE,
     TFT_RED
@@ -24,7 +25,7 @@ struct ForestFireModel *new_forest(unsigned int growth, unsigned int ignition) {
             a->temp[i*COLS+j] = EMPTY;
             a->cell[i*COLS+j] = EMPTY;
             if (i > 0 && i < ROWS-1 && j > 0 && j < COLS-1)
-                a->cell[i*COLS+j] = random(EMPTY, TREE+1);
+                a->cell[i*COLS+j] = random(EMPTY, SAPLING+1);
         }
     }
     return a;
@@ -39,7 +40,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
             int index = base + j;
             uint8_t state = forest->cell[index];
             // Trees adjacent to fires catch fire (von Neumann neighborhood)
-            if (state == TREE) {
+            if (state == TREE || state == SAPLING) {
                 if (forest->cell[index-COLS] == FIRE
                     || forest->cell[index-1] == FIRE
                     || forest->cell[index+1] == FIRE
@@ -60,7 +61,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
                 forest->temp[index] = EMPTY;
                 // Chance for trees to grow on empty cells
                 if (random(forest->growth) == forest->growth-1) {
-                    forest->temp[index] = TREE;
+                    forest->temp[index] = SAPLING;
                 }
             }
         }
@@ -69,6 +70,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
         for (int j = 1; j < COLS-1; j++) {
             if (forest->cell[i*COLS+j] != forest->temp[i*COLS+j]) {
                 forest->cell[i*COLS+j] = forest->temp[i*COLS+j];
+                //tft->drawPixel(i*LEN-LEN, j*LEN-LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
                 tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
             }
         }
@@ -81,6 +83,7 @@ void simulate_forest(ForestFireModel *forest, TFT_eSPI *tft) {
 void draw_forest(ForestFireModel *forest, TFT_eSPI *tft) {
     for (int i = 0; i < ROWS; i++) {
         for (int j = 0; j < COLS; j++) {
+            //tft->drawPixel(i*LEN-LEN, j*LEN-LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
             tft->fillRect(i*LEN-LEN, j*LEN-LEN, LEN, LEN, FFM_COLOUR[forest->cell[i*COLS+j]]);
         }
     }

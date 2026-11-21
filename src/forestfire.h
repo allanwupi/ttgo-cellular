@@ -3,17 +3,18 @@
 
 #define OROWS 320
 #define OCOLS 170
-#define LEN 4
-#define NUM_STATES 4
+#define LEN 3
+#define NUM_STATES 5
 
 const int ROWS = OROWS/LEN+2;
 const int COLS = OCOLS/LEN+2;
 
 enum Cell {
-    EMPTY,  // 0
-    TREE,   // 1
-    FIRE,   // 2
-    ASH     // 3
+    EMPTY,
+    SAPLING,
+    TREE,
+    FIRE,
+    ASH
 };
 
 extern unsigned int FFM_COLOUR[NUM_STATES];
