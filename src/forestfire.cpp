@@ -13,15 +13,16 @@ unsigned int FFM_COLOUR[NUM_STATES] = {
 
 
 // Construct a forest fire model
-struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate) {
+struct ForestFireModel *new_forest(unsigned int new_growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate, unsigned int decay_rate) {
     FFM_t *a = (FFM_t *)malloc(sizeof(FFM_t));
     if (a == nullptr) {
         return nullptr;
     }
     a->population = 0;
-    a->new_growth = growth_rate;
+    a->new_growth = new_growth_rate;
     a->sapling_growth = sapling_growth_rate;
     a->ignition = ignition_rate;
+    a->decay = decay_rate;
     for (int n = 0; n < ROWS*COLS; n++) a->cell[n] = EMPTY;
     return a;
 }
@@ -56,7 +57,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                 forest->temp[index] = EMBERS;
             } else if (state == EMBERS) {
                 forest->temp[index] = DEAD;
-            } else if (state == DEAD && random(4) == 0) {
+            } else if (state == DEAD && random(forest->decay) == 0) {
                 forest->temp[index] = EMPTY;
             } else if (state == EMPTY) {
                 // Chance for trees to grow on empty cells

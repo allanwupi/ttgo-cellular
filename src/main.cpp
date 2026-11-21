@@ -6,9 +6,10 @@
 #define LEFT_BUTTON 0
 #define RIGHT_BUTTON 14
 
-unsigned int growth_rate = 500;
+unsigned int new_growth_rate = 500;
 unsigned int sapling_growth_rate = 50;
-unsigned int ignition_rate = growth_rate * 100;
+unsigned int ignition_rate = new_growth_rate * 100;
+unsigned int decay_rate = 10;
 bool left_button_press(void);
 bool right_button_press(void);
 
@@ -23,7 +24,7 @@ void setup() {
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(1);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    forest = new_forest(growth_rate, sapling_growth_rate, ignition_rate);
+    forest = new_forest(new_growth_rate, sapling_growth_rate, ignition_rate, decay_rate);
 }
 
 

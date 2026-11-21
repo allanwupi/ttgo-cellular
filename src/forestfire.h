@@ -26,12 +26,13 @@ typedef struct ForestFireModel {
     unsigned int new_growth;
     unsigned int sapling_growth;
     unsigned int ignition;
+    unsigned int decay;
     uint8_t temp[ROWS*COLS];
     uint8_t cell[ROWS*COLS];
 } FFM_t;
 
 
-struct ForestFireModel *new_forest(unsigned int growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate);
+struct ForestFireModel *new_forest(unsigned int new_growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate, unsigned int decay_rate);
 void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft);
 void grow_ffm(ForestFireModel *forest, TFT_eSPI *tft);
 void ignite_ffm(ForestFireModel *forest, TFT_eSPI *tft);
