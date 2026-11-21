@@ -1,13 +1,16 @@
 #include <TFT_eSPI.h>
 #include "forestfire.h"
-//#include "elementary.h"
 
 #define DELAY_MILLIS  50
 #define TFT_ROTATION  3
+#define LEFT_BUTTON 0
+#define RIGHT_BUTTON 14
 
 unsigned int growth_rate = 200;
-unsigned int sapling_growth_rate = 10;
+unsigned int sapling_growth_rate = 20;
 unsigned int ignition_rate = growth_rate * 100;
+bool left_button_press(void);
+bool right_button_press(void);
 
 FFM_t *forest;
 TFT_eSPI tft;
@@ -26,6 +29,12 @@ void setup() {
 
 void loop() {
     static unsigned long prev = millis();
+    if (left_button_press()) {
+        grow_ffm(forest);
+    }
+    if (right_button_press()) {
+        ignite_ffm(forest);
+    }
     if (millis() - prev >= DELAY_MILLIS) {
         simulate_ffm(forest, &tft);
         Serial.println(forest->population);
@@ -34,10 +43,21 @@ void loop() {
 }
 
 
-//void loop() {
-//    static ElementaryCellularAutomaton *A = newAutomaton(RULE_NUMBER);
-//    drawAutomaton(&tft, A);
-//    drawWorld(&tft, world, A);
-//    update(A);
-//    delay(SLEEP_MILLIS);
-//}
+bool left_button_press(void) {
+    static bool prevLeft = true;
+    static bool currLeft = false;
+    currLeft = !digitalRead(LEFT_BUTTON);
+    bool leftButtonPressed = (!prevLeft && currLeft);
+    prevLeft = currLeft;
+    return leftButtonPressed;
+}
+
+
+bool right_button_press(void) {
+    static bool prevRight = true;
+    static bool currRight = false;
+    currRight = !digitalRead(RIGHT_BUTTON);
+    bool rightButtonPressed = (!prevRight && currRight);
+    prevRight = currRight;
+    return rightButtonPressed;
+}

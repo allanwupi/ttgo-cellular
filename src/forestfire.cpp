@@ -74,3 +74,31 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
         }
     }
 }
+
+
+// Grow trees on half of all empty spaces immediately
+void grow_ffm(ForestFireModel *forest) {
+    for (int i = 1; i < ROWS-1; i++) {
+        for (int j = 1; j < COLS-1; j++) {
+            int index = i*COLS + j;
+            if (random(2) && forest->cell[index] == EMPTY) {
+                forest->cell[index] = SAPLING;
+                forest->population++;
+            }
+        }
+    }
+}
+
+
+// Burn half of all trees immediately
+void ignite_ffm(ForestFireModel *forest) {
+    for (int i = 1; i < ROWS-1; i++) {
+        for (int j = 1; j < COLS-1; j++) {
+            int index = i*COLS + j;
+            if (random(2) && forest->cell[index] == TREE) {
+                forest->cell[index] = FIRE;
+                forest->population--;
+            }
+        }
+    }
+}
