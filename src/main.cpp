@@ -11,14 +11,15 @@ unsigned int ignition_rate = growth_rate * 100;
 FFM_t *forest;
 TFT_eSPI tft;
 
+
 void setup() {
+    Serial.begin(115200);
     tft.init();
     tft.setRotation(TFT_ROTATION);
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(1);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
     forest = new_forest(growth_rate, ignition_rate);
-    draw_ffm(forest, &tft);
 }
 
 
@@ -26,6 +27,7 @@ void loop() {
     static unsigned long prev = millis();
     if (millis() - prev >= DELAY_MILLIS) {
         simulate_ffm(forest, &tft);
+        Serial.println(forest->population);
         prev = millis();
     }
 }
