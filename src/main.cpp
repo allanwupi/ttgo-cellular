@@ -6,10 +6,11 @@
 #define LEFT_BUTTON 0
 #define RIGHT_BUTTON 14
 
-unsigned int new_growth_rate = 500;
-unsigned int sapling_growth_rate = 50;
-unsigned int ignition_rate = new_growth_rate * 100;
-unsigned int decay_rate = 10;
+const unsigned int new_growth_rate = 1000;
+const unsigned int sapling_growth_rate = 100;
+const unsigned int ignition_rate = new_growth_rate * 100;
+const unsigned int decay_rate = 10;
+
 bool left_button_press(void);
 bool right_button_press(void);
 
