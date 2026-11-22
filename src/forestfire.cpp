@@ -13,16 +13,19 @@ unsigned int FFM_COLOUR[NUM_STATES] = {
 
 
 // Construct a forest fire model
-struct ForestFireModel *new_forest(unsigned int new_growth_rate, unsigned int sapling_growth_rate, unsigned int ignition_rate, unsigned int decay_rate) {
+struct ForestFireModel *new_forest(bool s, unsigned int p, unsigned int g, unsigned int f, unsigned int d) {
     FFM_t *a = (FFM_t *)malloc(sizeof(FFM_t));
-    if (a == nullptr) {
-        return nullptr;
-    }
+    a->generation = 0;
     a->population = 0;
-    a->new_growth = new_growth_rate;
-    a->sapling_growth = sapling_growth_rate;
-    a->ignition = ignition_rate;
-    a->decay = decay_rate;
+    a->enable_seasons = s;
+    a->base_plant = p;
+    a->plant = a->base_plant;
+    a->base_growth = g;
+    a->growth = a->base_growth;
+    a->base_fire = f;
+    a->fire = a->base_fire;
+    a->base_decay = d;
+    a->decay = a->base_decay;
     for (int n = 0; n < ROWS*COLS; n++) a->cell[n] = EMPTY;
     return a;
 }
@@ -30,6 +33,42 @@ struct ForestFireModel *new_forest(unsigned int new_growth_rate, unsigned int sa
 
 // Simulate a step of the forest fire cellular automaton
 void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
+    static unsigned int SEASON_LENGTH = 250;
+    static unsigned int YEAR_LENGTH = 4 * SEASON_LENGTH;
+    if (forest->enable_seasons && forest->generation % SEASON_LENGTH == 0) {
+        // Update plant, growth, fire and decay rates every 250 steps
+        Season season = (Season)((forest->generation % YEAR_LENGTH) / SEASON_LENGTH);
+        switch (season) {
+            case SPRING:
+                forest->plant = forest->base_plant/2;
+                forest->growth = forest->base_growth/2;
+                forest->fire = forest->base_fire;
+                forest->decay = forest->base_decay/2;
+                tft->setCursor(LEN, LEN); tft->print("Spring");
+                break;
+            case SUMMER:
+                forest->plant = forest->base_plant;
+                forest->growth = forest->base_growth;
+                forest->fire = forest->base_fire/10;
+                forest->decay = forest->base_decay;
+                tft->setCursor(LEN, LEN); tft->print("Summer");
+                break;
+            case AUTUMN:
+                forest->plant = forest->base_plant;
+                forest->growth = forest->base_growth;
+                forest->fire = forest->base_fire;
+                forest->decay = forest->base_decay;
+                tft->setCursor(LEN, LEN); tft->print("Autumn");
+                break;
+            case WINTER:
+                forest->plant = forest->base_plant*10;
+                forest->growth = forest->base_growth*10;
+                forest->fire = forest->base_fire;
+                forest->decay = forest->base_decay*10;
+                tft->setCursor(LEN, LEN); tft->print("Winter");
+                break;
+        }
+    }
     for (int i = 1; i < ROWS-1; i++) {
         int base = i * COLS;
         for (int j = 1; j < COLS-1; j++) {
@@ -45,10 +84,10 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                     forest->temp[index] = FIRE;
                     forest->population--;
                 } else {
-                    if (state == SAPLING && random(forest->sapling_growth) == 0)
+                    if (state == SAPLING && random(forest->growth) == 0)
                         forest->temp[index] = TREE;
                     // Chance for trees to spontaneously catch fire
-                    if (random(forest->ignition) == 0) {
+                    if (random(forest->fire) == 0) {
                         forest->temp[index] = FIRE;
                         forest->population--;
                     }
@@ -61,7 +100,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                 forest->temp[index] = EMPTY;
             } else if (state == EMPTY) {
                 // Chance for trees to grow on empty cells
-                if (random(forest->new_growth) == 0) {
+                if (random(forest->plant) == 0) {
                     forest->temp[index] = SAPLING;
                     forest->population++;
                 }
@@ -76,6 +115,7 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
             }
         }
     }
+    forest->generation++;
 }
 
 

@@ -2,14 +2,14 @@
 #include "forestfire.h"
 
 #define DELAY_MILLIS 50
-#define TFT_ROTATION 3
 #define LEFT_BUTTON 0
 #define RIGHT_BUTTON 14
 
-const unsigned int new_growth_rate = 1000;
-const unsigned int sapling_growth_rate = 100;
-const unsigned int ignition_rate = new_growth_rate * 100;
-const unsigned int decay_rate = 10;
+const bool enable_seasons = true;
+const unsigned int plant_rate = 1000;
+const unsigned int growth_rate = 100;
+const unsigned int fire_rate = plant_rate * 100;
+const unsigned int decay_rate = growth_rate / 10;
 
 bool left_button_press(void);
 bool right_button_press(void);
@@ -23,9 +23,9 @@ void setup() {
     tft.init();
     tft.setRotation(TFT_ROTATION);
     tft.fillScreen(TFT_BLACK);
-    tft.setTextSize(1);
+    tft.setTextSize(2);
     tft.setTextColor(TFT_WHITE, TFT_BLACK);
-    forest = new_forest(new_growth_rate, sapling_growth_rate, ignition_rate, decay_rate);
+    forest = new_forest(enable_seasons, plant_rate, growth_rate, fire_rate, decay_rate);
 }
 
 
