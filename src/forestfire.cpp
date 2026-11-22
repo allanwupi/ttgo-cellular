@@ -44,28 +44,28 @@ void simulate_ffm(ForestFireModel *forest, TFT_eSPI *tft) {
                 forest->growth = forest->base_growth/2;
                 forest->fire = forest->base_fire;
                 forest->decay = forest->base_decay/2;
-                tft->setCursor(LEN, LEN); tft->print("Spring");
+                tft->setCursor(LEN, LEN); tft->printf("Spring %d", forest->generation/1000+1);
                 break;
             case SUMMER:
                 forest->plant = forest->base_plant;
                 forest->growth = forest->base_growth;
                 forest->fire = forest->base_fire/10;
                 forest->decay = forest->base_decay;
-                tft->setCursor(LEN, LEN); tft->print("Summer");
+                tft->setCursor(LEN, LEN); tft->printf("Summer %d", forest->generation/1000+1);
                 break;
             case AUTUMN:
                 forest->plant = forest->base_plant;
                 forest->growth = forest->base_growth;
                 forest->fire = forest->base_fire;
                 forest->decay = forest->base_decay;
-                tft->setCursor(LEN, LEN); tft->print("Autumn");
+                tft->setCursor(LEN, LEN); tft->printf("Autumn %d", forest->generation/1000+1);
                 break;
             case WINTER:
                 forest->plant = forest->base_plant*10;
                 forest->growth = forest->base_growth*10;
                 forest->fire = forest->base_fire;
                 forest->decay = forest->base_decay*10;
-                tft->setCursor(LEN, LEN); tft->print("Winter");
+                tft->setCursor(LEN, LEN); tft->printf("Winter %d", forest->generation/1000+1);
                 break;
         }
     }

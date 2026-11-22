@@ -1,9 +1,9 @@
 #ifndef MODEL_H
 #define MODEL_H
 
-#define TFT_ROTATION 0
-#define OROWS 170
-#define OCOLS 320
+#define TFT_ROTATION 3
+#define OROWS 320
+#define OCOLS 170
 #define LEN 3
 #define NUM_STATES 6
 

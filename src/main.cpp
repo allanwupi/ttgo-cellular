@@ -24,7 +24,7 @@ void setup() {
     tft.setRotation(TFT_ROTATION);
     tft.fillScreen(TFT_BLACK);
     tft.setTextSize(2);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK); 
     forest = new_forest(enable_seasons, plant_rate, growth_rate, fire_rate, decay_rate);
 }
 
