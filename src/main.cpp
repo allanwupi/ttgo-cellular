@@ -5,7 +5,7 @@
 #define LEFT_BUTTON 0
 #define RIGHT_BUTTON 14
 
-const bool enable_seasons = true;
+const bool enable_seasons = false;
 const unsigned int plant_rate = 1000;
 const unsigned int growth_rate = 100;
 const unsigned int fire_rate = plant_rate * 100;
@@ -23,8 +23,8 @@ void setup() {
     tft.init();
     tft.setRotation(TFT_ROTATION);
     tft.fillScreen(TFT_BLACK);
-    tft.setTextSize(2);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK); 
+    tft.setTextSize(1);
+    tft.setTextColor(TFT_GREEN, TFT_BLACK); 
     forest = new_forest(enable_seasons, plant_rate, growth_rate, fire_rate, decay_rate);
 }
 
